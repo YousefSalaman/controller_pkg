@@ -1,0 +1,19 @@
+#This are the movements and activation commands that need to be requested
+# The name of the service is "mov_ctrl_req"
+
+# Command that can be performed with controllers
+ bool   switch
+ bool   activate
+ bool   deactivate
+
+ # All the "controllers" for movement control
+ bool   forward
+ bool   backward
+ bool   left
+ bool   right
+ bool   depth
+ bool   yaw
+ bool   pitch
+---
+ bool   req_status
+ # The one above if the request was processed or not
