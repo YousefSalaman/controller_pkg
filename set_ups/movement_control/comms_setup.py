@@ -1,12 +1,13 @@
 
-
 from ...utils import *
 from .srv import MovementCtrlChange
-from .msg import ActivateMovementCtrls, MovementMeasures, MovementSetPoints, ThrusterValues
+from .msg import ActivateMovementCtrls, MovementMeasures, MovementSetPoints, MotorValues
 
 NODE_NAME = ""  # Node name for the movement controllers
 
 RUNNER = None  # Runner for the movement controllers
+
+_MOTORS = ["motor_" + str(i) for i in range(1, 9)]  # List of motor names
 
 # Information about the ROS messages/services related to the movement controls
 MSGS_INFO = {
@@ -19,20 +20,28 @@ MSGS_INFO = {
         },
     "actuators":
         {
-            "attributes": {"thruster_" + str(i): 1500 for i in range(1, 9)},
-            "msg": ThrusterValues,
+            "attributes": dict.fromkeys(_MOTORS, 1500),
+            "msg": MotorValues,
             "queue_size": 3,
-            "topic": "thruster_values"
+            "topic": "mov_motor_values"
         },
     "measurements":
         {
-            "attributes": {"yaw", "pitch", "depth"},
+            "attributes":
+                {
+                    "z", "yaw", "pitch", "roll", "qx", "qy", "qz", "qw",
+                    "vel_x", "vel_y", "vel_z"
+                },
             "msg": MovementMeasures,
             "topic": "mov_measures"
         },
     "set_points":
         {
-            "attributes": {"set_forward", "set_backward", "set_left", "set_right", "set_yaw", "set_pitch", "set_depth"},
+            "attributes":
+                {
+                    "set_forward", "set_backward", "set_left", "set_right",
+                    "set_x", "set_y", "set_z", "set_yaw", "set_pitch", "set_depth"
+                },
             "msg": MovementSetPoints,
             "topic": "mov_set_points"
         },
@@ -44,9 +53,8 @@ MSGS_INFO = {
 }
 
 # TODO: Verify again what thrusters are assigned to each controller/movement
-_ACTUATORS = ["thruster_" + str(i) for i in range(1, 9)]
-_CONFIG_1 = set(_ACTUATORS[:4])  # Thrusters 1 to 4
-_CONFIG_2 = set(_ACTUATORS[4:])  # Thrusters 5 to 8
+_CONFIG_1 = set(_MOTORS[:4])  # Motors 1 to 4
+_CONFIG_2 = set(_MOTORS[4:])  # Motors 5 to 8
 
 # Information about the movement controllers
 CTRLS_INFO = {
