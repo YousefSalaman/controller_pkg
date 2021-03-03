@@ -10,8 +10,10 @@ class RequestVerifiers:
     a desired state given by a set of set points. Different controllers could
     share a common set of actuators to perform this corrective action. This
     class acts as a measure to ensure the active controllers don't conflict
-    with each other in this regard. That is, this class gurantees all the
-    active controllers will not have any actuators in common.
+    with each other in this regard. That is, this class guarantees all the
+    active controllers will not have any actuators in common. When a controller
+    is activated, any other controller that might conflict with the requested
+    controller is deactivated.
     """
 
     def __init__(self, msgs_info, ctrls_info):
@@ -112,8 +114,8 @@ class RequestVerifiers:
         used for publishing the current active controls.
         """
 
-        self.ctrl_request_srv = rospy.Service(self.msgs_info["verifier"]["topic"],
-                                              self.msgs_info["verifier"]["msg"],
+        self.ctrl_request_srv = rospy.Service(self.msgs_info["verifier"]["service"],
+                                              self.msgs_info["verifier"]["srv"],
                                               self.process_ctrl_request)
 
         self.active_ctrls_pub = rospy.Publisher(self.msgs_info["active_ctrls"]["topic"],

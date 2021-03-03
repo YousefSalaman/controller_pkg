@@ -20,6 +20,12 @@ class ControllerCommunications:
     - msgs_info:
 
       {
+        "active_ctrls: -> Information relating to the active controllers topic with a dictionary as value shown below
+          {
+          "attributes": -> Names of all the active controllers in the message
+          "msg":  -> ROS Message object corresponding to the active controllers
+          "topic":  -> Topic name for the active controllers
+          }
         "actuators": -> Information relating to the actuator topic with a dictionary as value shown below
           {
           "attributes": -> Dictionary with the names of all the actuators as keys and their default value as values
@@ -44,6 +50,11 @@ class ControllerCommunications:
           "msg":  -> ROS Message object corresponding to the set points
           "topic":  -> Topic name for the set points
           }
+        "verifier":
+          {
+          "service":  -> Service name for the service
+          "srv":  -> ROS Service object corresponding to the verifier
+          }
       }
 
     - ctrls_info:
@@ -53,19 +64,18 @@ class ControllerCommunications:
         ctrl_i: -> Name of the ith controller in the control system. Each of these comes with a dictionary with info as
                    values as shown below
           {
-          "group_key": -> Group key for the controller
+          "actuators" -> Set of actuators this controller uses. Must be set object containing the name of the actuators
           "inputs" -> Names of the inputs to the controller
-          "runner": -> Runner object for the controller "ctrl_i"
           }
         ...
         }
         """
 
-    def __init__(self, node_name, msgs_info, ctrls_info):
+    def __init__(self, node_name, runner, msgs_info, ctrls_info):
 
         rospy.init_node(node_name)
 
-        self.req_checker = RequestVerifiers(msgs_info, ctrls_info)
-        self.ctrl_evaluator = ControllerEvaluators(msgs_info, ctrls_info)
+        RequestVerifiers(msgs_info, ctrls_info)
+        ControllerEvaluators(runner, msgs_info, ctrls_info)
 
         rospy.spin()

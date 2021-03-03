@@ -1,5 +1,6 @@
 # The message were the thruster values are stored in
 # All of these will contain the PWM values for each thruster
+# The name of the topic is "thruster_values"
 
 int32 thruster_1
 int32 thruster_2

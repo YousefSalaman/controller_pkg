@@ -2,7 +2,7 @@
 import rospy
 
 
-class ControllerEvaluators:  # TODO: Might remove the group key from runner so remember to change this here
+class ControllerEvaluators:
     """
     This class gathers all the necessary information, runs the controllers
     and it publishes the actuator values.
@@ -29,8 +29,9 @@ class ControllerEvaluators:  # TODO: Might remove the group key from runner so r
     the constructor.
     """
 
-    def __init__(self, msgs_info, ctrls_info):  # TODO: May change
+    def __init__(self, runner, msgs_info, ctrls_info):
 
+        self.runner = runner  # Save the runner object to run the controllers
         self.msgs_info = msgs_info  # Save relevant information about the messages
         self.ctrls_info = ctrls_info  # Save relevant information about the control systems
 
@@ -100,10 +101,8 @@ class ControllerEvaluators:  # TODO: Might remove the group key from runner so r
         ctrl_outputs = {}
         for ctrl, is_active in self.active_ctrls.items():
             if is_active:
-                runner = self.ctrls_info[ctrl]["runner"]
-                group_key = self.ctrls_info[ctrl]["group_key"]
                 ctrl_inputs = self._extract_controller_inputs(ctrl)
-                ctrl_outputs.update(runner.run_system(group_key, ctrl, **ctrl_inputs))
+                ctrl_outputs.update(self.runner.run_system(ctrl, **ctrl_inputs))
         return ctrl_outputs
 
     def set_point_callback(self, set_points):

@@ -1,7 +1,7 @@
 #This are the movements and activation commands that need to be requested
 # The name of the service is "mov_ctrl_req"
 
-# Command that can be performed with controllers
+# Commands that can be performed with controllers
  bool   switch
  bool   activate
  bool   deactivate
