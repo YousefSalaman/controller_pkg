@@ -2,12 +2,12 @@
 import rospy
 
 
-class ControllerEvaluators:
+class ControllerEvaluators(object):
     """
     This class gathers all the necessary information, runs the controllers
     and it publishes the actuator values.
 
-    This class uses 4 different ROS messages to function:
+    This class uses 4 different ROS topics to function:
 
         - Set Point Topic: The class is subscribed to this topic to gather
           the different set points of the system and use them to guide the

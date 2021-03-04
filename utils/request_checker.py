@@ -2,7 +2,7 @@
 import rospy
 
 
-class RequestVerifiers:
+class RequestVerifiers(object):
     """
     This class verifies and processes any incoming controller request.
 
@@ -21,7 +21,7 @@ class RequestVerifiers:
     inactive. The active controllers are the ones that are going to be ran in
     the control evaluator class.
 
-    This class uses 1 ROS message and 1 ROS service to function:
+    This class uses 1 ROS topic and 1 ROS service to function:
 
         - Activate Controller Topic: This class is the publisher of this topic
           and it states what controllers are active after processing a request
@@ -46,7 +46,7 @@ class RequestVerifiers:
 
         self._init_rospy_dependencies()
 
-    def process_ctrl_request_handler(self, ctrl_request_srv):
+    def process_ctrl_request(self, ctrl_request):
         """
         The service handler for processing the incoming requests to change
         the current active controllers.
@@ -64,11 +64,11 @@ class RequestVerifiers:
         """
 
         # If only one of the process methods was requested, then process the request
-        if ctrl_request_srv.switch + ctrl_request_srv.activate + ctrl_request_srv.deactivate == 1:
-            requested_ctrls = [ctrl for ctrl in self.ctrls_info if getattr(ctrl_request_srv, ctrl)]
-            if ctrl_request_srv.switch:
+        if ctrl_request.switch + ctrl_request.activate + ctrl_request.deactivate == 1:
+            requested_ctrls = [ctrl for ctrl in self.ctrls_info if getattr(ctrl_request, ctrl)]
+            if ctrl_request.switch:
                 valid_request = self._switch_ctrls(requested_ctrls)
-            elif ctrl_request_srv.activate:
+            elif ctrl_request.activate:
                 valid_request = self._activate_ctrl(requested_ctrls)
             else:
                 valid_request = self._deactivate_ctrls(requested_ctrls)
@@ -139,7 +139,7 @@ class RequestVerifiers:
 
         self.ctrl_request_srv = rospy.Service(self.msgs_info["verifier"]["service"],
                                               self.msgs_info["verifier"]["srv"],
-                                              self.process_ctrl_request_handler)
+                                              self.process_ctrl_request)
 
         self.active_ctrls_pub = rospy.Publisher(self.msgs_info["active_ctrls"]["topic"],
                                                 self.msgs_info["active_ctrls"]["msg"],

@@ -8,12 +8,11 @@
 
  # All the "controllers" for movement control
  bool   forward
- bool   backward
- bool   left
  bool   right
  bool   depth
  bool   yaw
  bool   pitch
+ bool   roll
 ---
  bool   req_status
  # The one above if the request was processed or not

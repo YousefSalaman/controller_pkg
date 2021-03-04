@@ -13,7 +13,7 @@ _MOTORS = ["motor_" + str(i) for i in range(1, 9)]  # List of motor names
 MSGS_INFO = {
     "active_ctrls":
         {
-            "attributes": {"forward", "backward", "left", "right", "yaw", "pitch", "depth"},
+            "attributes": {"forward", "right", "yaw", "pitch", "roll", "depth"},
             "msg": ActivateMovementCtrls,
             "queue_size": 3,
             "topic": "act_mov_ctrls"
@@ -39,7 +39,7 @@ MSGS_INFO = {
         {
             "attributes":
                 {
-                    "set_forward", "set_backward", "set_left", "set_right",
+                    "set_forward", "set_right",
                     "set_x", "set_y", "set_z", "set_yaw", "set_pitch", "set_roll"
                 },
             "msg": MovementSetPoints,
@@ -78,6 +78,11 @@ CTRLS_INFO = {
         {
             "actuators": _CONFIG_1,
             "inputs": ["set_right"]
+        },
+    "roll":
+        {
+            "actuators": _CONFIG_2,
+            "inputs": ["roll", "set_roll"]
         },
     "yaw":
         {
