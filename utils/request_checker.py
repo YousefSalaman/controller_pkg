@@ -14,19 +14,42 @@ class RequestVerifiers:
     active controllers will not have any actuators in common. When a controller
     is activated, any other controller that might conflict with the requested
     controller is deactivated.
+
+    The active controllers are stored in the dictionary active_ctrls, where the
+    keys are the controllers being considered and the values are just booleans.
+    If the value is True, then the controller is active. Otherwise, it is
+    inactive. The active controllers are the ones that are going to be ran in
+    the control evaluator class.
+
+    This class uses 1 ROS message and 1 ROS service to function:
+
+        - Activate Controller Topic: This class is the publisher of this topic
+          and it states what controllers are active after processing a request
+          made by another part of the code.
+
+        - Controller Change Service: This class acts as a server for this
+          service. It is in charge of reading a request to activate or
+          deactivate the controllers. After processing this, it will publish the
+          active controllers on the topic mentioned above.
+
+    Notice how I didn't mention the specific names for the topic and the service.
+    That's because when creating an instance of this class, the user provides all
+    of this information. This makes the class reusable for other systems and other
+    types of controls within a system.
     """
 
     def __init__(self, msgs_info, ctrls_info):
 
         self.msgs_info = msgs_info
         self.ctrls_info = ctrls_info
-        self.active_ctrls = dict.fromkeys(ctrls_info, False)
+        self.active_ctrls = dict.fromkeys(ctrls_info, False)  # Dictionary that indicates if a controller is active
 
         self._init_rospy_dependencies()
 
-    def process_ctrl_request(self, ctrl_request):
+    def process_ctrl_request_handler(self, ctrl_request_srv):
         """
-        This method processes the incoming requests.
+        The service handler for processing the incoming requests to change
+        the current active controllers.
 
         For a set of controllers, the method can:
 
@@ -41,11 +64,11 @@ class RequestVerifiers:
         """
 
         # If only one of the process methods was requested, then process the request
-        if ctrl_request.switch + ctrl_request.activate + ctrl_request.deactivate == 1:
-            requested_ctrls = [ctrl for ctrl in self.ctrls_info if getattr(ctrl_request, ctrl)]
-            if ctrl_request.switch:
+        if ctrl_request_srv.switch + ctrl_request_srv.activate + ctrl_request_srv.deactivate == 1:
+            requested_ctrls = [ctrl for ctrl in self.ctrls_info if getattr(ctrl_request_srv, ctrl)]
+            if ctrl_request_srv.switch:
                 valid_request = self._switch_ctrls(requested_ctrls)
-            elif ctrl_request.activate:
+            elif ctrl_request_srv.activate:
                 valid_request = self._activate_ctrl(requested_ctrls)
             else:
                 valid_request = self._deactivate_ctrls(requested_ctrls)
@@ -94,8 +117,8 @@ class RequestVerifiers:
         for ctrl in self.ctrls_info:
             ctrl_actuators = self.ctrls_info[ctrl]["actuators"]
             actuators_in_common = ctrl_actuators.intersection(new_ctrl_actuators)
-            if len(actuators_in_common) != 0:  # If controllers have some actuators in common
-                self.active_ctrls[ctrl]["activated"] = False
+            if len(actuators_in_common) != 0 and new_ctrl != ctrl:  # If controllers have some actuators in common
+                self.active_ctrls[ctrl] = False
 
     def _deactivate_ctrls(self, requested_ctrls):
         """
@@ -116,7 +139,7 @@ class RequestVerifiers:
 
         self.ctrl_request_srv = rospy.Service(self.msgs_info["verifier"]["service"],
                                               self.msgs_info["verifier"]["srv"],
-                                              self.process_ctrl_request)
+                                              self.process_ctrl_request_handler)
 
         self.active_ctrls_pub = rospy.Publisher(self.msgs_info["active_ctrls"]["topic"],
                                                 self.msgs_info["active_ctrls"]["msg"],

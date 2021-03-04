@@ -1,10 +1,9 @@
 # All the set points for movement control
 # The topic name for this is "mov_set_points"
 
-# Set points for constant movement
+# Set points for constant movement in thrust % [-100,100]
+# To get movement in the opposite direction, just set the thrust % value to negative
 float32 set_forward
-float32 set_backward
-float32 set_left
 float32 set_right
 
 # Set points for desired position state

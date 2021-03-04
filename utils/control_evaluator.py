@@ -7,7 +7,7 @@ class ControllerEvaluators:
     This class gathers all the necessary information, runs the controllers
     and it publishes the actuator values.
 
-    This class uses 4 different rostopics to function:
+    This class uses 4 different ROS messages to function:
 
         - Set Point Topic: The class is subscribed to this topic to gather
           the different set points of the system and use them to guide the
@@ -24,9 +24,10 @@ class ControllerEvaluators:
         - Actuator Topic: The class publishes to this topic to indicate
           what should be the values of each actuator.
 
-    Notice how I didn't mention the specific names of these topics. That's
-    because the user needs to provide all of this information and more through
-    the constructor.
+    Notice how I didn't mention the specific names for the topics above. That's
+    because when creating an instance of this class, the user provides all of
+    this information. This makes the class reusable for other systems and other
+    types of controls within a system.
     """
 
     def __init__(self, runner, msgs_info, ctrls_info):
@@ -38,16 +39,16 @@ class ControllerEvaluators:
         self._init_rospy_dependencies()
         self._create_information_storages()
 
-    def active_ctrl_callback(self, active_ctrls):
+    def active_ctrl_callback(self, active_ctrls_msg):
         """
         Callback that updates what are the controllers that should be
         ran in the code.
         """
 
         for ctrl in self.active_ctrls:
-            self.active_ctrls[ctrl] = getattr(active_ctrls, ctrl)
+            self.active_ctrls[ctrl] = getattr(active_ctrls_msg, ctrl)
 
-    def measurement_callback(self, measurements):
+    def measurement_callback(self, measurements_msg):
         """
         Measurement callback to update the measurements taken from the
         sensors.
@@ -65,7 +66,7 @@ class ControllerEvaluators:
         """
 
         for measure in self.measurements:
-            self.measurements[measure] = getattr(measurements, measure)
+            self.measurements[measure] = getattr(measurements_msg, measure)
 
         active_ctrls = set(ctrl for ctrl, is_active in self.active_ctrls.items() if is_active)
         if self.prev_active_ctrls != active_ctrls:
@@ -105,14 +106,14 @@ class ControllerEvaluators:
                 ctrl_outputs.update(self.runner.run_system(ctrl, **ctrl_inputs))
         return ctrl_outputs
 
-    def set_point_callback(self, set_points):
+    def set_point_callback(self, set_points_msg):
         """
         Set point callback to update the set points for the control
         systems.
         """
 
         for set_point in self.set_points:
-            self.set_points[set_point] = getattr(set_points, set_point)
+            self.set_points[set_point] = getattr(set_points_msg, set_point)
 
     def _check_if_initialized(self, active_ctrls):
         """
@@ -145,13 +146,13 @@ class ControllerEvaluators:
         self.prev_active_ctrls = set()  # Previous active controllers
 
         # Indicates if a controller is active or not (these are gathered in the active_ctrl_callback method)
-        self.active_ctrls = {ctrl: False for ctrl in self.ctrls_info}
+        self.active_ctrls = dict.fromkeys(self.ctrls_info, False)
 
         # Storage for set point values (these are gathered in the set_point_callback method)
-        self.set_points = {set_point: None for set_point in self.msgs_info["set_points"]["attributes"]}
+        self.set_points = dict.fromkeys(self.msgs_info["set_points"]["attributes"])
 
         # Storage for measurement values (these are gathered in the measurement_callback method)
-        self.measurements = {measurement: None for measurement in self.msgs_info["measurements"]["attributes"]}
+        self.measurements = dict.fromkeys(self.msgs_info["measurements"]["attributes"])
 
     def _extract_controller_inputs(self, ctrl):
 

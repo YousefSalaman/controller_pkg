@@ -64,8 +64,8 @@ class ControllerCommunications:
         ctrl_i: -> Name of the ith controller in the control system. Each of these comes with a dictionary with info as
                    values as shown below
           {
-          "actuators" -> Set of actuators this controller uses. Must be set object containing the name of the actuators
-          "inputs" -> Names of the inputs to the controller
+          "actuators": -> Set of actuators this controller uses. Must be set object containing the name of the actuators
+          "inputs": -> Names of the inputs to the controller
           }
         ...
         }

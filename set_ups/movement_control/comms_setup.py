@@ -40,7 +40,7 @@ MSGS_INFO = {
             "attributes":
                 {
                     "set_forward", "set_backward", "set_left", "set_right",
-                    "set_x", "set_y", "set_z", "set_yaw", "set_pitch", "set_depth"
+                    "set_x", "set_y", "set_z", "set_yaw", "set_pitch", "set_roll"
                 },
             "msg": MovementSetPoints,
             "topic": "mov_set_points"
@@ -52,17 +52,13 @@ MSGS_INFO = {
         }
 }
 
+
 # TODO: Verify again what thrusters are assigned to each controller/movement
 _CONFIG_1 = set(_MOTORS[:4])  # Motors 1 to 4
 _CONFIG_2 = set(_MOTORS[4:])  # Motors 5 to 8
 
 # Information about the movement controllers
 CTRLS_INFO = {
-    "backward":
-        {
-            "actuators": _CONFIG_1,
-            "inputs": ["set_backward"]
-        },
     "depth":
         {
             "actuators": _CONFIG_2,
@@ -72,11 +68,6 @@ CTRLS_INFO = {
         {
             "actuators": _CONFIG_1,
             "inputs": ["set_forward"]
-        },
-    "left":
-        {
-            "actuators": _CONFIG_1,
-            "inputs": ["set_left"]
         },
     "pitch":
         {
