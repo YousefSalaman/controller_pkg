@@ -146,8 +146,9 @@ class ControllerEvaluators(object):
         self.prev_active_ctrls = set()  # Previous active controllers
 
         # Define the attributes "active_ctrls", "set_points", "measurements" with their respective default values
-        for attr_name, default in [("active_ctrls", False), ("set_points", None), ("measurements", None)]:
-            msg_attrs = (attr for attr in self.msgs_info[attr_name]["msg"].__slots__ if attr != "header")
+        attr_iter = zip(["active_ctrls", "set_points", "measurements"], [False, None, None])
+        for attr_name, default in attr_iter:
+            msg_attrs = self._get_message_attributes(attr_name)
             setattr(self, attr_name, dict.fromkeys(msg_attrs, default))
 
     def _extract_controller_inputs(self, ctrl):
@@ -162,6 +163,17 @@ class ControllerEvaluators(object):
 
         return ctrl_inputs
 
+    def _get_message_attributes(self, attr_name):
+
+        msg_cls = self.msgs_info[attr_name]["msg"]  # Get the respective message class
+
+        # The __slots__ dunder attribute contains the names of the attributes the instances must have
+        # and _slot_types contains the types of the attributes in the same order they are stored in
+        # __slots__
+        msg_attr_iter = zip(msg_cls.__slots__, msg_cls._slot_types)  # Get attribute names and types
+
+        return [msg_attr_name for msg_attr_name, msg_attr_type in msg_attr_iter if msg_attr_type != "Header"]
+
     def _init_rospy_dependencies(self):
         """
         Initialize ROS dependencies.
@@ -174,7 +186,7 @@ class ControllerEvaluators(object):
 
         self.actuator_pub = rospy.Publisher(self.msgs_info["actuators"]["topic"],
                                             self.msgs_info["actuators"]["msg"],
-                                            self.msgs_info["actuators"]["queue_size"])
+                                            queue_size=self.msgs_info["actuators"]["queue_size"])
 
         self.set_points_sub = rospy.Subscriber(self.msgs_info["set_points"]["topic"],
                                                self.msgs_info["set_points"]["msg"],

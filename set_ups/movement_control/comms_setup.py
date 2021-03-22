@@ -1,7 +1,7 @@
 
 from ...utils import *
 from .srv import MovementCtrlChange
-from .msg import ActivateMovementCtrls, MovementMeasures, MovementSetPoints, MotorValues
+from .msg import ActiveMovementCtrls, MovementMeasures, MovementSetPoints, MotorValues
 
 NODE_NAME = ""  # Node name for the movement controllers
 
@@ -13,7 +13,7 @@ _MOTORS = ["motor_" + str(i) for i in range(1, 9)]  # List of motor names
 MSGS_INFO = {
     "active_ctrls":
         {
-            "msg": ActivateMovementCtrls,
+            "msg": ActiveMovementCtrls,
             "queue_size": 3,
             "topic": "act_mov_ctrls"
         },
@@ -80,6 +80,5 @@ CTRLS_INFO = {
         }
 }
 
-if __name__ == "__main__":
 
-    control_comms.ControllerCommunications(NODE_NAME, RUNNER, MSGS_INFO, CTRLS_INFO)
+mov_comms = control_comms.ControllerCommunications(NODE_NAME, RUNNER, MSGS_INFO, CTRLS_INFO)

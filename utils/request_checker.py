@@ -143,7 +143,7 @@ class RequestVerifiers(object):
 
         self.active_ctrls_pub = rospy.Publisher(self.msgs_info["active_ctrls"]["topic"],
                                                 self.msgs_info["active_ctrls"]["msg"],
-                                                self.msgs_info["active_ctrls"]["queue_size"])
+                                                queue_size=self.msgs_info["active_ctrls"]["queue_size"])
 
     def _publish_active_controllers(self):
 
