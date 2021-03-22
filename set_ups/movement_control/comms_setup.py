@@ -3,8 +3,8 @@
 import sys
 
 # Add paths of the respective packages, so Python can find them
-control_pkg_path = "C:/Users/Yousef/PycharmProjects/RUMarino"
-mov_control_path = "C:/Users/Yousef/PycharmProjects/RUMarino/controller_pkg/set_ups"
+control_pkg_path = ""
+mov_control_path = control_pkg_path + "/controller_pkg/set_ups"
 sys.path.extend([control_pkg_path, mov_control_path])
 
 from movement_control import *  # Package with the msg, srv, and other ros stuff
