@@ -22,13 +22,12 @@ class ControllerCommunications(object):
       {
         "active_ctrls: -> Information relating to the active controllers topic with a dictionary as value shown below
           {
-          "attributes": -> Names of all the active controllers in the message
           "msg":  -> ROS Message object corresponding to the active controllers
           "topic":  -> Topic name for the active controllers
           }
         "actuators": -> Information relating to the actuator topic with a dictionary as value shown below
           {
-          "attributes": -> Dictionary with the names of all the actuators as keys and their default value as values
+          "defaults": -> Dictionary with the names of all the actuators as keys and their default value as values
             {
             ...
             "actuator_i": -> Name of the ith actuator as the key and as a value its default value
@@ -40,13 +39,11 @@ class ControllerCommunications(object):
           }
         "measurements": -> Information relating to the measurement topic with a dictionary as value shown below
           {
-          "attributes": -> Names of all the measurements in the message
           "msg":  -> ROS Message object corresponding to the measurements
           "topic":  -> Topic name for the measurements
           }
         "set_points": -> Information relating to the set point topic with a dictionary as value shown below
           {
-          "attributes": -> Names of all the set points in the message
           "msg":  -> ROS Message object corresponding to the set points
           "topic":  -> Topic name for the set points
           }
