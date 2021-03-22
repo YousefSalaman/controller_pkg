@@ -48,7 +48,7 @@ class RequestVerifiers(object):
 
     def process_ctrl_request(self, ctrl_request):
         """
-        The service handler for processing the incoming requests to change
+        The service callback for processing the incoming requests to change
         the current active controllers.
 
         For a set of controllers, the method can:

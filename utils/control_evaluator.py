@@ -145,14 +145,10 @@ class ControllerEvaluators(object):
         self.initialized_ctrls = set()  # Initialized controllers
         self.prev_active_ctrls = set()  # Previous active controllers
 
-        # Indicates if a controller is active or not (these are gathered in the active_ctrl_callback method)
-        self.active_ctrls = dict.fromkeys(self.ctrls_info, False)
-
-        # Storage for set point values (these are gathered in the set_point_callback method)
-        self.set_points = dict.fromkeys(self.msgs_info["set_points"]["attributes"])
-
-        # Storage for measurement values (these are gathered in the measurement_callback method)
-        self.measurements = dict.fromkeys(self.msgs_info["measurements"]["attributes"])
+        # Define the attributes "active_ctrls", "set_points", "measurements" with their respective default values
+        for attr_name, default in [("active_ctrls", False), ("set_points", None), ("measurements", None)]:
+            msg_attrs = (attr for attr in self.msgs_info[attr_name]["msg"].__slots__ if attr != "header")
+            setattr(self, attr_name, dict.fromkeys(msg_attrs, default))
 
     def _extract_controller_inputs(self, ctrl):
 
@@ -208,11 +204,11 @@ class ControllerEvaluators(object):
         """
 
         actuators_msg = self.msgs_info["actuators"]["msg"]()  # Creates a message object, so we can publish the values
-        for actuator in self.msgs_info["actuators"]["attributes"]:
+        for actuator, default_value in self.msgs_info["actuators"]["defaults"].items():
             if actuator in ctrl_outputs:
                 value = ctrl_outputs[actuator]
             else:
-                value = self.msgs_info["actuators"]["attributes"][actuator]  # This is the actuator's default value
+                value = default_value  # This is the actuator's default value
             setattr(actuators_msg, actuator, value)  # State the values the actuators should have in the message
 
         self.actuator_pub.publish(actuators_msg)  # Publish values to topic after finishing

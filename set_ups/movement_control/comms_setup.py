@@ -13,35 +13,24 @@ _MOTORS = ["motor_" + str(i) for i in range(1, 9)]  # List of motor names
 MSGS_INFO = {
     "active_ctrls":
         {
-            "attributes": {"forward", "right", "yaw", "pitch", "roll", "depth"},
             "msg": ActivateMovementCtrls,
             "queue_size": 3,
             "topic": "act_mov_ctrls"
         },
     "actuators":
         {
-            "attributes": dict.fromkeys(_MOTORS, 1500),
+            "defaults": dict.fromkeys(_MOTORS, 1500),
             "msg": MotorValues,
             "queue_size": 3,
             "topic": "mov_motor_values"
         },
     "measurements":
         {
-            "attributes":
-                {
-                    "z", "yaw", "pitch", "roll", "qx", "qy", "qz", "qw",
-                    "vel_x", "vel_y", "vel_z"
-                },
             "msg": MovementMeasures,
             "topic": "mov_measures"
         },
     "set_points":
         {
-            "attributes":
-                {
-                    "set_forward", "set_right",
-                    "set_x", "set_y", "set_z", "set_yaw", "set_pitch", "set_roll"
-                },
             "msg": MovementSetPoints,
             "topic": "mov_set_points"
         },
