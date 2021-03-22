@@ -1,5 +1,9 @@
 
+__all__ = ["MotorValues",
+           "MovementMeasures",
+           "MovementSetPoints",
+           "MovementCtrlChange",
+           "ActiveMovementCtrls"]
 
-__all__ = ["mov_comms"]
-
-from .comms_setup import mov_comms
+from srv import MovementCtrlChange
+from msg import ActiveMovementCtrls, MovementMeasures, MovementSetPoints, MotorValues

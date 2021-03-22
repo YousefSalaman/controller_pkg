@@ -70,16 +70,9 @@ class ControllerCommunications(object):
 
     def __init__(self, node_name, runner, msgs_info, ctrls_info):
 
-        self.runner = runner
-        self.node_name = node_name
-        self.msgs_info = msgs_info
-        self.ctrls_info = ctrls_info
+        rospy.init_node(node_name)
 
-    def rosrun(self):
-
-        rospy.init_node(self.node_name)
-
-        RequestVerifiers(self.msgs_info, self.ctrls_info)
-        ControllerEvaluators(self.runner, self.msgs_info, self.ctrls_info)
+        RequestVerifiers(msgs_info, ctrls_info)
+        ControllerEvaluators(runner, msgs_info, ctrls_info)
 
         rospy.spin()
