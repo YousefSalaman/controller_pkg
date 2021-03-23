@@ -1,5 +1,7 @@
 
 
-__all__ = ["control_comms"]
+__all__ = ["run_generator",
+           "ControllerCommunications"]
 
-from .control_comms import ControllerCommunications
+from .ctrl_file_generator import run_generator
+from .ros_comms import ControllerCommunications
