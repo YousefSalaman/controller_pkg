@@ -1,4 +1,8 @@
 
+
+from __future__ import print_function
+
+
 __all__ = ["generate_ctrl_files"]
 
 
@@ -11,11 +15,12 @@ import subprocess
 
 
 # Define version specific functions
-user_input = input
-match = re.fullmatch
 if sys.version_info[:2] <= (2, 7):  # If Python 2.7 or lower
     match = re.match
     user_input = raw_input
+else:
+    user_input = input
+    match = re.fullmatch
 
 
 def generate_ctrl_files():
@@ -23,11 +28,8 @@ def generate_ctrl_files():
     ctrl_dir_path = _get_ctrl_directory_path()
     if ctrl_dir_path is not None:
         _create_directories(ctrl_dir_path)
-        ros_pkg_process = _create_ros_files(ctrl_dir_path)
-        if ros_pkg_process.returncode == 0:  # If no errors were encountered when creating ROS package
-            _create_python_files(ctrl_dir_path)
-        else:
-            _reset_file_creation(ctrl_dir_path)
+        _create_ros_files(ctrl_dir_path)
+        _create_python_files(ctrl_dir_path)
 
 
 # Control directory path creator functions
@@ -115,7 +117,7 @@ def _create_ros_files(ctrl_dir_path):
         print("Type 'add' to add a new ROS dependency\n"
               "type 'remove' to remove an added dependency\n"
               "type 'end' to stop adding or removing dependencies")
-        option = user_input("Add dependencies here:")
+        option = user_input("Type one of the options above here:")
         if option == "add":
             _add_ros_dependency(add_depend)
         elif option == "end":
@@ -125,8 +127,14 @@ def _create_ros_files(ctrl_dir_path):
 
     print("Creating ROS files and package...")
 
-    # Create ROS package and return subprocess object
-    return subprocess.run(["catkin_create_pkg", os.path.basename(ctrl_dir_path), *add_depend, *_DEFAULT_DEPEND])
+    basename = os.path.basename(ctrl_dir_path)
+    add_depend.extend(_DEFAULT_DEPEND)
+    command1 = 'cd ' + os.path.join(os.getcwd(), 'src')
+    command2 = "catkin_create_pkg " + os.path.basename(ctrl_dir_path) + " " + " ".join(add_depend)
+    ros_pkg_p = subprocess.Popen(command1 + "; " + command2, shell=True)
+    ros_pkg_p.wait()
+
+    os.rmdir(os.path.join(ctrl_dir_path, 'src'))
 
 
 def _add_ros_dependency(add_depend):
