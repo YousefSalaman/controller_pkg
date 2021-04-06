@@ -1,89 +1,106 @@
 { "comms_setup":
 
 "
+# In here, you will define the information dictionaries and establish the communications
+# with the other parts of the code through the ControllerCommunications object
+
 ######################################################################
 ################## Add any relevant imports in here ##################
 ######################################################################
 
 # Things you need to import:
 #   1. Runner object from the ctrl_setup script
+#   2. ControllerCommunications object
+#   3. Import relevant ROS messages and service
 
-NODE_NAME =  # Node name for the movement controllers
+NODE_NAME =  None # Node name for the movement controllers
 
-RUNNER =  # Put the runner
+RUNNER =  None # Put the runner
 
-# Information about the ROS messages/services related to the movement controls
+######################################################################
+################## Put message and service info here #################
+######################################################################
+
 MSGS_INFO = {
     \"active_ctrls\":
         {
-            \"msg\":  # ROS Message object corresponding to the active controllers
-            \"queue_size\":  # Queue size for the server
-            \"topic\":  #
+            \"msg\": None,  # ROS Message object corresponding to the active controllers
+            \"queue_size\": None, # Queue size for the server
+            \"topic\": None # Topic name for the active controllers
         },
-    "actuators":
+    \"actuators\":
         {
-            "defaults": dict.fromkeys(_MOTORS, 1500),
-            "msg": MotorValues,
-            "queue_size": 3,
-            "topic": "mov_motor_values"
+            \"defaults\": None, # Dictionary with the names of all the actuators as keys and their default value as values
+            {
+                \"actuator_i\": None, # Name of the ith actuator as the key and as a value its default value
+            }
+            \"msg\": None, # ROS Message object corresponding to the actuators
+            \"queue_size\": None, # Queue size for the actuator publisher
+            \"topic\": None # Topic name for the set of actuators
         },
-    "measurements":
+    \"measurements\":
         {
-            "msg": MovementMeasures,
-            "topic": "mov_measures"
+            \"msg\": None, # ROS Message object corresponding to the measurements
+            \"topic\": None # Topic name for the measurements
         },
-    "set_points":
+    \"set_points\":
         {
-            "msg": MovementSetPoints,
-            "topic": "mov_set_points"
+            \"msg\": None, # ROS Message object corresponding to the set points
+            \"topic\": None # Topic name for the set points
         },
-    "verifier":
+    \"verifier\":
         {
-            "service": "mov_ctrl_req",
-            "srv": MovementCtrlChange
+            \"service\": None, # Service name for the service
+            \"srv\": None # ROS Service object corresponding to the verifier
         }
 }
 
 
-# TODO: Verify again what thrusters are assigned to each controller/movement
-_CONFIG_1 = set(_MOTORS[:4])  # Motors 1 to 4
-_CONFIG_2 = set(_MOTORS[4:])  # Motors 5 to 8
+######################################################################
+################## Enter controller information here #################
+######################################################################
 
-# Information about the movement controllers
 CTRLS_INFO = {
-    "depth":
-        {
-            "actuators": _CONFIG_2,
-            "inputs": ["depth", "set_depth"]
-        },
-    "forward":
-        {
-            "actuators": _CONFIG_1,
-            "inputs": ["set_forward"]
-        },
-    "pitch":
-        {
-            "actuators": _CONFIG_2,
-            "inputs": ["pitch", "set_pitch"]
-        },
-    "right":
-        {
-            "actuators": _CONFIG_1,
-            "inputs": ["set_right"]
-        },
-    "roll":
-        {
-            "actuators": _CONFIG_2,
-            "inputs": ["roll", "set_roll"]
-        },
-    "yaw":
-        {
-            "actuators": _CONFIG_1,
-            "inputs": ["yaw", "set_yaw"]
-        }
+     {
+     \"ctrl_i\": None # Name of the ith controller in the control system. Each of these comes with
+                      # a dictionary with info as values as shown below
+          {
+          \"actuators\": None, # Set of actuators this controller uses. Must be set object containing the
+                               # name of the actuators
+          \"inputs\": None # Names of the inputs to the controller
+          }
+     }
 }
 
 
-if __name__ == "__main__":
+if __name__ == \"__main__\":
 
-    ControllerCommunications(NODE_NAME, RUNNER, MSGS_INFO, CTRLS_INFO)"
+    ControllerCommunications(NODE_NAME, RUNNER, MSGS_INFO, CTRLS_INFO)",
+
+"ctrl_setup":
+
+"
+# In here, you will put the pyrunner code that you used to generate the contents in your
+# runner_gen.py script.
+
+######################################################################
+################## Add any relevant imports in here ##################
+######################################################################
+
+# Things you need to import:
+#   1. Import the pyrunner package
+
+######################################################################
+############## Add pyrunner code to generate runner here #############
+######################################################################
+
+# Note that this code is just here in case you need to generate the runner again for
+# documentation/preservation purposes
+",
+
+"runner_gen":
+
+"
+# In here, you will find bs
+"
+}
