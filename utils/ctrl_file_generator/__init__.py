@@ -1,4 +1,4 @@
 
-__all__ = ["run_generator"]
+__all__ = ["generate_ctrl_files"]
 
-from .file_struct_gen import run_generator
+from .file_struct_gen import generate_ctrl_files

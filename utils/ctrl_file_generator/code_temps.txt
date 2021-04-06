@@ -1,29 +1,24 @@
+{ "comms_setup":
 
+"
+######################################################################
+################## Add any relevant imports in here ##################
+######################################################################
 
-import sys
+# Things you need to import:
+#   1. Runner object from the ctrl_setup script
 
-# Add paths of the respective packages, so Python can find them
-control_pkg_path = ""
-mov_control_path = control_pkg_path + "/controller_pkg/set_ups"
-sys.path.extend([control_pkg_path, mov_control_path])
+NODE_NAME =  # Node name for the movement controllers
 
-from movement_control import *  # Package with the msg, srv, and other ros stuff
-from controller_pkg.utils import *  # Controller comms are stored in here
-
-
-NODE_NAME = "test_node"  # Node name for the movement controllers
-
-RUNNER = None  # Runner for the movement controllers
-
-_MOTORS = ["motor_" + str(i) for i in range(1, 9)]  # List of motor names
+RUNNER =  # Put the runner
 
 # Information about the ROS messages/services related to the movement controls
 MSGS_INFO = {
-    "active_ctrls":
+    \"active_ctrls\":
         {
-            "msg": ActiveMovementCtrls,
-            "queue_size": 3,
-            "topic": "act_mov_ctrls"
+            \"msg\":  # ROS Message object corresponding to the active controllers
+            \"queue_size\":  # Queue size for the server
+            \"topic\":  #
         },
     "actuators":
         {
@@ -91,4 +86,4 @@ CTRLS_INFO = {
 
 if __name__ == "__main__":
 
-    ControllerCommunications(NODE_NAME, RUNNER, MSGS_INFO, CTRLS_INFO)
+    ControllerCommunications(NODE_NAME, RUNNER, MSGS_INFO, CTRLS_INFO)"

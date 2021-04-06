@@ -1,14 +1,9 @@
 
 import os
 
-from controller_pkg.utils import run_generator
-
-
-def run_generator_interface():
-
-    pass
+from controller_pkg.utils import generate_ctrl_files
 
 
 if __name__ == "__main__":
 
-    pass
+    generate_ctrl_files()
