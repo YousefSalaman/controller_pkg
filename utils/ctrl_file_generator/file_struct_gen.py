@@ -160,7 +160,7 @@ def _remove_ros_dependency(add_depend):
 
 def _display_dependencies(add_depend):
 
-    print("All the dependencies are:", ', '.join([*add_depend, *_DEFAULT_DEPEND]))
+    print("All the dependencies are:", ', '.join(add_depend + list(_DEFAULT_DEPEND)))
     if len(add_depend) == 0:
         print("There are no modifiable dependencies present.")
     else:
