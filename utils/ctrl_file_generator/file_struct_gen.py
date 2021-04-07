@@ -61,7 +61,7 @@ def _ctrl_path_from_cwd():
 
     ctrl_dir = _get_directory_name()
     if ctrl_dir is not None:
-        return os.path.join(os.getcwd(), "set_ups", ctrl_dir)  # Return path to the input directory
+        return os.path.join(os.getcwd(), "src", ctrl_dir)  # Return path to the input directory
     return
 
 
@@ -127,6 +127,7 @@ def _create_ros_files(ctrl_dir_path):
 
     print("Creating ROS files and package...")
 
+    # Create ROS packages and
     basename = os.path.basename(ctrl_dir_path)
     add_depend.extend(_DEFAULT_DEPEND)
     command1 = 'cd ' + os.path.join(os.getcwd(), 'src')
