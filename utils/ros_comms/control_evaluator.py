@@ -206,7 +206,7 @@ class ControllerEvaluators(object):
 
         This method takes the outputs of all the active controllers
         and passes the resulting values to the message. For this to
-        work, the output values of the controllers must be placed in
+        work, the run values of the controllers must be placed in
         keys that have the same name as the actuators in the actuator
         message.
 

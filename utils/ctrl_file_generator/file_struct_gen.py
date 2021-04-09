@@ -10,7 +10,6 @@ import re
 import os
 import sys
 import json
-import shutil
 import subprocess
 
 
@@ -38,13 +37,10 @@ def _get_ctrl_directory_path():
 
     ctrl_dir_path = None
     while ctrl_dir_path is None:
-        print("Type 'custom' to manually enter a path to create the directory and files or\n"
-              "type 'set' to create the directory and files in the set_ups directory or\n"
+        print("Type 'set' to create the directory and files in the set_ups directory or\n"
               "type 'back' to not continue with the program.")
         option = user_input("Enter one of the options above: ")
-        if option == 'custom':
-            ctrl_dir_path = _ctrl_path_from_custom()
-        elif option == 'set':
+        if option == 'set':
             ctrl_dir_path = _ctrl_path_from_cwd()
         elif option == 'back':
             break
@@ -62,17 +58,6 @@ def _ctrl_path_from_cwd():
     ctrl_dir = _get_directory_name()
     if ctrl_dir is not None:
         return os.path.join(os.getcwd(), "src", ctrl_dir)  # Return path to the input directory
-    return
-
-
-def _ctrl_path_from_custom():
-
-    input_path = user_input("Enter a path to create the control directory: ")
-    if os.path.exists(input_path):
-        ctrl_dir = _get_directory_name()
-        if ctrl_dir is not None:
-            return os.path.join(input_path, ctrl_dir)
-    print("The path you entered does not exist. Please enter a valid path.\n")
     return
 
 
@@ -110,7 +95,7 @@ _DEFAULT_DEPEND = ('std_msgs', 'rospy', 'roscpp')  # Default dependencies that n
 def _create_ros_files(ctrl_dir_path):
     # Add subprocess stuff here to run and (maybe) create the packages
 
-    print("This section is to add/remove any ROS dependencies here.\n\n")
+    print("This section is to add/remove any ROS dependencies.\n")
 
     add_depend = []
     while True:
@@ -125,17 +110,7 @@ def _create_ros_files(ctrl_dir_path):
         elif option == "remove":
             _remove_ros_dependency(add_depend)
 
-    print("Creating ROS files and package...")
-
-    # Create ROS packages and
-    basename = os.path.basename(ctrl_dir_path)
-    add_depend.extend(_DEFAULT_DEPEND)
-    command1 = 'cd ' + os.path.join(os.getcwd(), 'src')
-    command2 = "catkin_create_pkg " + os.path.basename(ctrl_dir_path) + " " + " ".join(add_depend)
-    ros_pkg_p = subprocess.Popen(command1 + "; " + command2, shell=True)
-    ros_pkg_p.wait()
-
-    os.rmdir(os.path.join(ctrl_dir_path, 'src'))
+    _run_commands(add_depend, ctrl_dir_path)
 
 
 def _add_ros_dependency(add_depend):
@@ -158,22 +133,26 @@ def _remove_ros_dependency(add_depend):
         print("The package {} is not present in the modifiable dependencies.".format(pkg))
 
 
+def _run_commands(add_depend, ctrl_dir_path):
+
+    print("Creating ROS files and package...")
+
+    add_depend.extend(_DEFAULT_DEPEND)
+    cmd_1 = 'cd src'  # Move to src directory in controller_pkg
+    cmd_2 = "catkin_create_pkg " + os.path.basename(ctrl_dir_path) + " " + " ".join(add_depend)  # Create ROS package
+    ros_pkg_p = subprocess.Popen(cmd_1 + "; " + cmd_2, shell=True)
+    ros_pkg_p.wait()
+
+    os.rmdir(os.path.join(ctrl_dir_path, 'src'))  # Remove src directory that comes with ROS package
+
+
 def _display_dependencies(add_depend):
 
     print("All the dependencies are:", ', '.join(add_depend + list(_DEFAULT_DEPEND)))
     if len(add_depend) == 0:
-        print("There are no modifiable dependencies present.")
+        print("There are no dependencies you can remove at the moment.")
     else:
         print("The modifiable dependencies are:", ', '.join(add_depend))
-
-
-# Reset file creation
-
-def _reset_file_creation(ctrl_dir_path):
-
-    print("An error occured while creating the ROS package.")
-    print("Undoing directory creation...")
-    shutil.rmtree(ctrl_dir_path)  # Remove ctrl directory and files within
 
 
 # Function that creates the python files
