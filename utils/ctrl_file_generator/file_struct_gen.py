@@ -37,7 +37,7 @@ def _get_ctrl_directory_path():
 
     ctrl_dir_path = None
     while ctrl_dir_path is None:
-        print("Type 'set' to create the directory and files in the set_ups directory or\n"
+        print("Type 'set' to create the directory and files in the 'src' directory or\n"
               "type 'back' to not continue with the program.")
         option = user_input("Enter one of the options above: ")
         if option == 'set':
@@ -61,12 +61,13 @@ def _ctrl_path_from_cwd():
     return
 
 
+_DIR_NAME_REGEX = re.compile("[_a-zA-Z][_a-zA-Z0-9]*")
+
+
 def _get_directory_name():
 
-    dir_name_regex = "[_a-zA-Z][_a-zA-Z0-9]*"
-
     ctrl_dir = user_input("Enter the name of the control directory: ")
-    if match(dir_name_regex, ctrl_dir):
+    if match(_DIR_NAME_REGEX, ctrl_dir):
         return ctrl_dir  # Return input directory name
     print("Please enter a valid directory name. An example of a"
           " valid directory name is 'movement_control'.\n")
@@ -150,7 +151,7 @@ def _display_dependencies(add_depend):
 
     print("All the dependencies are:", ', '.join(add_depend + list(_DEFAULT_DEPEND)))
     if len(add_depend) == 0:
-        print("There are no dependencies you can remove at the moment.")
+        print("There are no dependencies you can modify at the moment.")
     else:
         print("The modifiable dependencies are:", ', '.join(add_depend))
 
