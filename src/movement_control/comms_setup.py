@@ -5,11 +5,10 @@ import sys
 
 # Add paths of the respective packages, so Python can find them
 control_pkg_path = ""  # Path to directory that contains the controller_pkg directory
-mov_control_path = os.path.join(control_pkg_path, "controller_pkg", "src")
+mov_control_path = os.path.join(control_pkg_path, "controller_pkg", "src", "movement_control")
 sys.path.extend([control_pkg_path, mov_control_path])
 
-from movement_control import *  # Package with the msg, srv, and other ros stuff
-from controller_pkg.utils import ControllerCo  # Controller comms are stored in here
+from controller_pkg.utils.ros_comms import ControllerComms  # Controller comms are stored in here
 
 
 NODE_NAME = "test_node"  # Node name for the movement controllers
@@ -92,4 +91,4 @@ CTRLS_INFO = {
 
 if __name__ == "__main__":
 
-    ControllerCommunications(NODE_NAME, RUNNER, MSGS_INFO, CTRLS_INFO)
+    ControllerComms(NODE_NAME, RUNNER, MSGS_INFO, CTRLS_INFO)

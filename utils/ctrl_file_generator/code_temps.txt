@@ -65,7 +65,6 @@ MSGS_INFO = {
 ######################################################################
 
 CTRLS_INFO = {
-     {
      \"ctrl_i\": # Name of the ith controller in the control system. Each of these comes with
                       # a dictionary with info as values as shown below
           {
@@ -73,7 +72,6 @@ CTRLS_INFO = {
                                # name of the actuators
           \"inputs\": None # Names of the inputs to the controller
           }
-     }
 }
 
 
