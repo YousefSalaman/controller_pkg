@@ -61,13 +61,12 @@ def _ctrl_path_from_cwd():
     return
 
 
-_DIR_NAME_REGEX = re.compile("[_a-zA-Z][_a-zA-Z0-9]*")
-
-
 def _get_directory_name():
 
+    dir_name_regex = "[_a-zA-Z][_a-zA-Z0-9]*"
+
     ctrl_dir = user_input("Enter the name of the control directory: ")
-    if match(_DIR_NAME_REGEX, ctrl_dir):
+    if match(dir_name_regex, ctrl_dir):
         return ctrl_dir  # Return input directory name
     print("Please enter a valid directory name. An example of a"
           " valid directory name is 'movement_control'.\n")

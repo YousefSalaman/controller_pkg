@@ -2,15 +2,19 @@
 
 "
 # In here, you will define the information dictionaries and establish the communications
-# with the other parts of the code through the ControllerCommunications object
+# with the other parts of the code through the ControllerComms object
 
 ######################################################################
 ################## Add any relevant imports in here ##################
 ######################################################################
 
+from srv import  # Put service class here
+from msg import  # Put message classes here
+from controller_pkg.utils.ros_comms import ControllerComms
+
 # Things you need to import:
 #   1. Runner object from the ctrl_setup script
-#   2. ControllerCommunications object
+#   2. ControllerComms object
 #   3. Import relevant ROS messages and service
 
 NODE_NAME =  None # Node name for the movement controllers
@@ -30,10 +34,10 @@ MSGS_INFO = {
         },
     \"actuators\":
         {
-            \"defaults\": None, # Dictionary with the names of all the actuators as keys and their default value as values
+            \"defaults\":  # Dictionary with the names of all the actuators as keys and their default value as values
             {
                 \"actuator_i\": None, # Name of the ith actuator as the key and as a value its default value
-            }
+            },
             \"msg\": None, # ROS Message object corresponding to the actuators
             \"queue_size\": None, # Queue size for the actuator publisher
             \"topic\": None # Topic name for the set of actuators
@@ -62,10 +66,10 @@ MSGS_INFO = {
 
 CTRLS_INFO = {
      {
-     \"ctrl_i\": None # Name of the ith controller in the control system. Each of these comes with
+     \"ctrl_i\": # Name of the ith controller in the control system. Each of these comes with
                       # a dictionary with info as values as shown below
           {
-          \"actuators\": None, # Set of actuators this controller uses. Must be set object containing the
+          \"actuators\": None, # The set of actuators this controller uses. Must be set object containing the
                                # name of the actuators
           \"inputs\": None # Names of the inputs to the controller
           }
@@ -75,7 +79,7 @@ CTRLS_INFO = {
 
 if __name__ == \"__main__\":
 
-    ControllerCommunications(NODE_NAME, RUNNER, MSGS_INFO, CTRLS_INFO)",
+    ControllerComms(NODE_NAME, RUNNER, MSGS_INFO, CTRLS_INFO)",
 
 "ctrl_setup":
 

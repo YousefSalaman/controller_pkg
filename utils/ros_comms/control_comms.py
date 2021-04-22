@@ -5,7 +5,7 @@ from .request_checker import RequestVerifiers
 from .control_evaluator import ControllerEvaluators
 
 
-class ControllerCommunications(object):
+class ControllerComms(object):
     """
     The purpose of this class is to establish communication between the
     control systems and other parts of the code. One can instance this

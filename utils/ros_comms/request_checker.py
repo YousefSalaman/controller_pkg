@@ -3,8 +3,7 @@ import rospy
 
 
 class RequestVerifiers(object):
-    """
-    This class verifies and processes any incoming controller request.
+    """ A class verifies and processes any incoming controller request.
 
     Controllers send information to a set of actuators to make the system reach
     a desired state given by a set of set points. Different controllers could
