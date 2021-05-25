@@ -120,8 +120,8 @@ class ControllerEvaluators(object):
                                      if set_point in self.ctrls_info[ctrl]["inputs"])
             if set_points_defined and measures_defined:
                 self.initialized_ctrls.add(ctrl)
-            return ctrl in self.initialized_ctrls
-        return True
+
+        return ctrl in self.initialized_ctrls
 
     def _create_information_storages(self):
         """Create dictionaries to store relevant information.
