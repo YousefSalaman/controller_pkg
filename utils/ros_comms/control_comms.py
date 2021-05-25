@@ -6,7 +6,8 @@ from .control_evaluator import ControllerEvaluators
 
 
 class ControllerComms(object):
-    """
+    """A class to create all the communication objects.
+
     The purpose of this class is to establish communication between the
     control systems and other parts of the code. One can instance this
     class binds different sections of the code, the control systems and a
@@ -68,11 +69,11 @@ class ControllerComms(object):
         }
         """
 
-    def __init__(self, node_name, runner, msgs_info, ctrls_info):
+    def __init__(self, node_name, msgs_info, ctrls_info):
 
         rospy.init_node(node_name)
 
         RequestVerifiers(msgs_info, ctrls_info)
-        ControllerEvaluators(runner, msgs_info, ctrls_info)
+        ControllerEvaluators(msgs_info, ctrls_info)
 
         rospy.spin()

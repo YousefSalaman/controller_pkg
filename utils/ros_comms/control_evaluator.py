@@ -1,10 +1,11 @@
 
 import rospy
 
+from pyrunner.pyrunner.runners import executors  # TODO: Change this when you make this package installable
+
 
 class ControllerEvaluators(object):
-    """
-    This class gathers all the necessary information, runs the controllers
+    """This class gathers all the necessary information, runs the controllers
     and it publishes the actuator values.
 
     This class uses 4 different ROS topics to function:
@@ -30,57 +31,41 @@ class ControllerEvaluators(object):
     types of controls within a system.
     """
 
-    def __init__(self, runner, msgs_info, ctrls_info):
+    def __init__(self, msgs_info, ctrls_info):
 
-        self.runner = runner  # Save the runner object to run the controllers
         self.msgs_info = msgs_info  # Save relevant information about the messages
         self.ctrls_info = ctrls_info  # Save relevant information about the control systems
 
+        # Define other attributes
         self._init_rospy_dependencies()
         self._create_information_storages()
 
     def active_ctrl_callback(self, active_ctrls_msg):
-        """
-        Callback that updates what are the controllers that should be
-        ran in the code.
-        """
+        """Callback to update the active controllers"""
 
         for ctrl in self.active_ctrls:
             self.active_ctrls[ctrl] = getattr(active_ctrls_msg, ctrl)
 
     def measurement_callback(self, measurements_msg):
-        """
-        Measurement callback to update the measurements taken from the
-        sensors.
+        """Callback to update the measurements taken from the sensor.
 
         Everytime this is ran, aside from internally updating the values
         taken from the different sensors, the active controllers are ran
         to calculate what new values the actuators should take to reach
         the values given by the set points. After this, the values for
         the actuators are also published to its respective topic.
-
-        A thing to note is the callback won't actually run the controllers
-        unless the values have been given to the set points and measurements.
-        This is to avoid any numerical errors in the calculations within the
-        controllers.
         """
 
         for measure in self.measurements:
             self.measurements[measure] = getattr(measurements_msg, measure)
 
-        active_ctrls = set(ctrl for ctrl, is_active in self.active_ctrls.items() if is_active)
-        if self.prev_active_ctrls != active_ctrls:
-            self._check_if_initialized(active_ctrls)
-            self.prev_active_ctrls = active_ctrls
-
         self._publish_actuator_values(self.run_controllers())
 
     def run_controllers(self):
-        """
-        Run the active controllers.
+        """Run the active controllers.
 
-        The results of the control system computations are stored in a
-        dictionary whose keys are the name of the relevant actuators.
+        The results of the control system's computations are stored in
+        a dictionary whose keys are the name of the relevant actuators.
 
         Running the controllers is delegated to an object that contains
         enough information about the control system to run it without
@@ -97,53 +82,55 @@ class ControllerEvaluators(object):
         and measurements are names differently since the controller
         needs to register the set points and the measurements as
         separate variables.
+
+        The last thing to note is the callback won't actually run the
+        controllers unless the values have been given to the set points
+        and measurements. This is to avoid any numerical errors in the
+        calculations within the controllers.
         """
 
         ctrl_outputs = {}
         for ctrl, is_active in self.active_ctrls.items():
-            if is_active:
+            if is_active and self._is_ctrl_initialized(ctrl):
                 ctrl_inputs = self._extract_controller_inputs(ctrl)
-                ctrl_outputs.update(self.runner.run_system(ctrl, **ctrl_inputs))
+                ctrl_outputs.update(executors.run(ctrl, ctrl_inputs))
+
         return ctrl_outputs
 
     def set_point_callback(self, set_points_msg):
-        """
-        Set point callback to update the set points for the control
-        systems.
-        """
+        """Callback to update the set points of the control systems."""
 
         for set_point in self.set_points:
             self.set_points[set_point] = getattr(set_points_msg, set_point)
 
-    def _check_if_initialized(self, active_ctrls):
-        """
-        This method checks if the set points and measurements (inputs) of
-        all the active controllers have been set a value.
+    def _is_ctrl_initialized(self, ctrl):
+        """Check if set points and measurements have numeric values for a
+        given controller.
 
-        Controllers that have all their inputs set will be stored and this
-        is used to indicate the values in the controllers should be taken
-        from the set point and measurement storage.
+        Basically, this just verifies if the arguments for the controller
+        have been entered or not. Controllers that have all their inputs set
+        will be stored and this is used to indicate if the values for the
+        actuators should be taken from its default value or the controller.
         """
 
-        for ctrl in active_ctrls:
-            if ctrl not in self.initialized_ctrls:
-                measures_defined = all(measure is not None for measure in self.measurements
-                                       if measure in self.ctrls_info[ctrl]["inputs"])
-                set_points_defined = all(set_point is not None for set_point in self.set_points
-                                         if set_point in self.ctrls_info[ctrl]["inputs"])
-                if set_points_defined and measures_defined:
-                    self.initialized_ctrls.add(ctrl)
+        if ctrl not in self.initialized_ctrls:
+            measures_defined = all(measure is not None for measure in self.measurements
+                                   if measure in self.ctrls_info[ctrl]["inputs"])
+            set_points_defined = all(set_point is not None for set_point in self.set_points
+                                     if set_point in self.ctrls_info[ctrl]["inputs"])
+            if set_points_defined and measures_defined:
+                self.initialized_ctrls.add(ctrl)
+            return ctrl in self.initialized_ctrls
+        return True
 
     def _create_information_storages(self):
-        """
-        Create dictionaries to store relevant information.
+        """Create dictionaries to store relevant information.
 
         The class uses these attributes, which are gathered in the different
         callbacks, to run the controllers.
         """
 
         self.initialized_ctrls = set()  # Initialized controllers
-        self.prev_active_ctrls = set()  # Previous active controllers
 
         # Define the attributes "active_ctrls", "set_points", "measurements" with their respective default values
         attr_iter = zip(["active_ctrls", "set_points", "measurements"], [False, None, None])
@@ -172,11 +159,11 @@ class ControllerEvaluators(object):
         # __slots__
         msg_attr_iter = zip(msg_cls.__slots__, msg_cls._slot_types)  # Get attribute names and types
 
-        return [msg_attr_name for msg_attr_name, msg_attr_type in msg_attr_iter if msg_attr_type != "Header"]
+        return [msg_attr_name for msg_attr_name, msg_attr_type in msg_attr_iter
+                if msg_attr_type != "Header"]
 
     def _init_rospy_dependencies(self):
-        """
-        Initialize ROS dependencies.
+        """Initialize ROS dependencies.
 
         The attributes are defined here, so there is a hard reference of
         the publishers/subscribers somewhere in the code, but these are
@@ -201,14 +188,12 @@ class ControllerEvaluators(object):
                                                  self.active_ctrl_callback)
 
     def _publish_actuator_values(self, ctrl_outputs):
-        """
-        Publish controller results to relevant actuator message.
+        """Publish controller results to relevant actuator message.
 
-        This method takes the outputs of all the active controllers
-        and passes the resulting values to the message. For this to
-        work, the run values of the controllers must be placed in
-        keys that have the same name as the actuators in the actuator
-        message.
+        This takes the outputs of all the active controllers and
+        passes the resulting values to the message. For this to work,
+        the values of the controllers must have keys that have the
+        same name as the actuators in the actuator message.
 
         However, if the an actuator value is not in any of the
         controller outputs, then the default value defined by the user
