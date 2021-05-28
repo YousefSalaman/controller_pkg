@@ -1,6 +1,7 @@
 { "comms_setup":
 
 "
+#!/usr/bin/env python
 # In here, you will define the information dictionaries and establish the communications
 # with the other parts of the code through the ControllerComms object
 
@@ -79,6 +80,7 @@ if __name__ == \"__main__\":
 "ctrl_setup":
 
 "
+#!/usr/bin/env python
 # In here, you will put the pyrunner code that you used to generate the contents in your
 # runner_gen.py script.
 
@@ -100,6 +102,7 @@ if __name__ == \"__main__\":
 "runner_gen":
 
 "
+#!/usr/bin/env python
 # In here, you enter the resultant runner code to run the control systems
 
 ######################################################################

@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 
 from utils.ctrl_file_generator import generate_ctrl_files
 

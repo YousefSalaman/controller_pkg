@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 import rospy
 
 from .request_checker import RequestVerifiers
