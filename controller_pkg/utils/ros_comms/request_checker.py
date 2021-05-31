@@ -63,6 +63,7 @@ class RequestVerifiers(object):
         """
 
         # If only one of the process methods was requested, then process the request
+        valid_request = False
         if ctrl_request.switch + ctrl_request.activate + ctrl_request.deactivate == 1:
             requested_ctrls = [ctrl for ctrl in self.ctrls_info if getattr(ctrl_request, ctrl)]
             if ctrl_request.switch:
@@ -75,10 +76,8 @@ class RequestVerifiers(object):
             # Only update active controllers if the request was valid
             if valid_request:
                 self._publish_active_controllers()
-            return valid_request
 
-        # Multiple process methods were requested or nothing was requested
-        return False
+        return valid_request
 
     def _activate_ctrl(self, requested_ctrl):
         """

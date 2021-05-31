@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 
-from pyrunner.pyrunner.runners import executors  # TODO: Change this when you make this package installable
+from pyrunner.runners import executors
 
 
 class ControllerEvaluators(object):
@@ -114,9 +114,9 @@ class ControllerEvaluators(object):
         """
 
         if ctrl not in self.initialized_ctrls:
-            measures_defined = all(measure is not None for measure in self.measurements
+            measures_defined = all(self.measurements[measure] is not None for measure in self.measurements
                                    if measure in self.ctrls_info[ctrl]["inputs"])
-            set_points_defined = all(set_point is not None for set_point in self.set_points
+            set_points_defined = all(self.set_points[set_point] is not None for set_point in self.set_points
                                      if set_point in self.ctrls_info[ctrl]["inputs"])
             if set_points_defined and measures_defined:
                 self.initialized_ctrls.add(ctrl)

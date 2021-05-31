@@ -15,7 +15,7 @@ import subprocess
 # TODO: Make re.match behave like re.fullmatch by probably using anchors
 
 # Define version specific functions
-if sys.version_info[:2] <= (2, 7):  # If Python 2.7 or lower
+if sys.version_info[:2] <= (2, 7):  # If Python 2.7
     match = re.match
     user_input = raw_input
 else:

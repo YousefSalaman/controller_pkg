@@ -9,9 +9,10 @@
 ################## Add any relevant imports in here ##################
 ######################################################################
 
+import ctrl_setup  # Leave this as it is
 from srv import  # Put service class here
 from msg import  # Put message classes here
-from controller_pkg.utils.ros_comms import ControllerComms
+from controller_pkg.utils.ros_comms import control_comms
 
 # Things you need to import:
 #   1. ControllerComms object
@@ -75,7 +76,7 @@ CTRLS_INFO = {
 
 if __name__ == \"__main__\":
 
-    ControllerComms(NODE_NAME, MSGS_INFO, CTRLS_INFO)",
+    control_comms.ControllerComms(NODE_NAME, MSGS_INFO, CTRLS_INFO)",
 
 "ctrl_setup":
 
@@ -97,16 +98,5 @@ if __name__ == \"__main__\":
 
 # Note that this code is just here in case you need to generate the runner again for
 # documentation/preservation purposes
-",
-
-"runner_gen":
-
-"
-#!/usr/bin/env python
-# In here, you enter the resultant runner code to run the control systems
-
-######################################################################
-################ Add the generated runner script here ################
-######################################################################
 "
 }

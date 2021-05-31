@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from utils.ctrl_file_generator import generate_ctrl_files
+from controller_pkg.utils.ctrl_file_generator import generate_ctrl_files
 
 
 if __name__ == "__main__":
